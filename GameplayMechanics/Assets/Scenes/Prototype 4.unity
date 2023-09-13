@@ -239,8 +239,14 @@ MonoBehaviour:
   powerupPrefabs:
   - {fileID: 8400758484751702267, guid: c4df35009064c3a44bee3d9cc4fe7eb9, type: 3}
   - {fileID: 8400758484751702267, guid: ba4c4ae8169eebe4d8328b9341d74f76, type: 3}
+  - {fileID: 4352291487096471363, guid: 3d5dd52a6812da74f98f0d0517cd6393, type: 3}
   enemyCount: 0
   waveNumber: 1
+  bossPrefab: {fileID: 7452524380321738157, guid: 2994c3b9b3503af45968baa3d12661e2, type: 3}
+  miniEnemyPrefabs:
+  - {fileID: 2868419387651336493, guid: e8dcb105211be174aaf2fa3cc5543685, type: 3}
+  - {fileID: 2487646170476837636, guid: bdcf1f4f4eba5a340b067d144e383bcd, type: 3}
+  bossRound: 2
 --- !u!4 &550960100
 Transform:
   m_ObjectHideFlags: 0
@@ -742,6 +748,10 @@ MonoBehaviour:
   powerupIndicator: {fileID: 2112189906}
   currentPowerUp: 0
   rocketPrefab: {fileID: 8581121524894910183, guid: 0de431afd37d6ff4ca68949742190480, type: 3}
+  hangTime: 0.5
+  smashSpeed: 30
+  explosionForce: 75
+  explosionRadius: 75
 --- !u!1 &2112189906 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1742899641471652, guid: 923deea38dc6a8843b15db7638919c1e, type: 3}
