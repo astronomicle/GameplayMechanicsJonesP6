@@ -6,11 +6,16 @@ public class PlayerControllerX : MonoBehaviour
 {
     private Rigidbody playerRb;
     private float speed = 500;
+    private float boostSpeed = 5000;
     private GameObject focalPoint;
 
     public bool hasPowerup;
+    private bool canBoost = true;
     public GameObject powerupIndicator;
     public int powerUpDuration = 5;
+    private int boostCooldown = 3;
+
+    public ParticleSystem smokeParticle;
 
     private float normalStrength = 10; // how hard to hit enemy without powerup
     private float powerupStrength = 25; // how hard to hit enemy with powerup
@@ -19,6 +24,7 @@ public class PlayerControllerX : MonoBehaviour
     {
         playerRb = GetComponent<Rigidbody>();
         focalPoint = GameObject.Find("Focal Point");
+        smokeParticle = GameObject.Find("Smoke_Particle").GetComponent<ParticleSystem>();
     }
 
     void Update()
@@ -30,6 +36,20 @@ public class PlayerControllerX : MonoBehaviour
         // Set powerup indicator position to beneath player
         powerupIndicator.transform.position = transform.position + new Vector3(0, -0.6f, 0);
 
+        bool spacebarPressed = Input.GetKeyDown(KeyCode.Space);
+        if (spacebarPressed && canBoost)
+        {
+            playerRb.AddForce(focalPoint.transform.forward * boostSpeed * Time.deltaTime, ForceMode.Impulse);
+            smokeParticle.Play();
+            canBoost = false;
+        }
+        else if (canBoost == false)
+        {
+            float playerPosX = this.transform.position.x;
+            float playerPosZ = this.transform.position.z;
+            smokeParticle.transform.position = new Vector3(playerPosX, -1, playerPosZ);
+            StartCoroutine(BoostCooldown());
+        }
     }
 
     // If Player collides with powerup, activate powerup
@@ -40,15 +60,22 @@ public class PlayerControllerX : MonoBehaviour
             Destroy(other.gameObject);
             hasPowerup = true;
             powerupIndicator.SetActive(true);
+            StartCoroutine(PowerupCooldown());
         }
     }
 
     // Coroutine to count down powerup duration
     IEnumerator PowerupCooldown()
     {
-        yield return new WaitForSeconds(powerUpDuration);
+        yield return new WaitForSeconds(boostCooldown);
         hasPowerup = false;
         powerupIndicator.SetActive(false);
+    }
+
+    IEnumerator BoostCooldown()
+    {
+        yield return new WaitForSeconds(powerUpDuration);
+        canBoost = true;;
     }
 
     // If Player collides with enemy
@@ -57,7 +84,7 @@ public class PlayerControllerX : MonoBehaviour
         if (other.gameObject.CompareTag("Enemy"))
         {
             Rigidbody enemyRigidbody = other.gameObject.GetComponent<Rigidbody>();
-            Vector3 awayFromPlayer =  transform.position - other.gameObject.transform.position; 
+            Vector3 awayFromPlayer = other.gameObject.transform.position - transform.position; 
            
             if (hasPowerup) // if have powerup hit enemy with powerup force
             {
@@ -71,7 +98,4 @@ public class PlayerControllerX : MonoBehaviour
 
         }
     }
-
-
-
 }
